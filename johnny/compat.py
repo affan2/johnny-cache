@@ -7,23 +7,13 @@ Tools to ease compatibility across supported versions of Django & Python.
 from __future__ import unicode_literals
 from django.db.models.sql import compiler
 
-
-try:
-    from queue import Queue
-except ImportError:  # Python < 3.0
-    from Queue import Queue
+from queue import Queue
 
 import django
 from django.db import transaction
 
-try:
-    from django.utils.encoding import force_bytes, force_text
-    from django.utils.six import string_types, text_type
-except ImportError:  # Django < 1.4.2
-    force_bytes = str
-    force_text = unicode
-    string_types = (str, unicode)
-    text_type = unicode
+from django.utils.encoding import force_bytes, force_text
+from django.utils.six import string_types, text_type
 
 
 __all__ = (

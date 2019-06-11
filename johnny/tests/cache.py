@@ -37,9 +37,11 @@ def _pre_setup(self):
     johnny_settings.DISABLE_QUERYSET_CACHE = False
     self.middleware = middleware.QueryCacheMiddleware()
 
+
 def _post_teardown(self):
     self.middleware.unpatch()
     johnny_settings.DISABLE_QUERYSET_CACHE = self.saved_DISABLE_SETTING
+
 
 class QueryCacheBase(base.JohnnyTestCase):
     def _pre_setup(self):
@@ -49,6 +51,7 @@ class QueryCacheBase(base.JohnnyTestCase):
     def _post_teardown(self):
         _post_teardown(self)
         super(QueryCacheBase, self)._post_teardown()
+
 
 class TransactionQueryCacheBase(base.TransactionJohnnyTestCase):
     def _pre_setup(self):
@@ -62,6 +65,7 @@ class TransactionQueryCacheBase(base.TransactionJohnnyTestCase):
             transaction.rollback()
         if is_managed():
             managed(False)
+
 
 class BlackListTest(QueryCacheBase):
     fixtures = base.johnny_fixtures

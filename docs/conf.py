@@ -19,9 +19,12 @@ import sys, os
 projpath = os.path.abspath('..')
 sys.path.append(projpath)
 
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+# This line of code may have to be replaced.
+# This was instead of using the deprecated setup_environ.
+# The second argument needs to include the name of the project, but which project, and
+# what that name is, is unclear. The settings.py's ROOT_URLCONF has the value of project.urls.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+from django.conf import settings
 
 # -- General configuration -----------------------------------------------------
 
@@ -53,7 +56,7 @@ copyright = u'2010, Jason Moiron, Jeremy Self'
 version = None
 for line in open(os.path.join(projpath, 'setup.py'), 'r'):
     if line.startswith('version'):
-        exec line
+        exec(line)
 if version is None:
     version = '0.1'
 # The full version, including alpha/beta/rc tags.

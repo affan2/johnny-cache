@@ -6,9 +6,10 @@
 from __future__ import unicode_literals
 import django
 from django.db import models
-from django.db.models import permalink
+from django.urls import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+
 
 def get_urlfield(*args, **kwargs):
     if django.VERSION[:2] >= (1, 4) and 'verify_exists' in kwargs:
@@ -17,11 +18,13 @@ def get_urlfield(*args, **kwargs):
     return models.URLField(*args, **kwargs)
 
 
-#from basic.people.models import Person
+# from basic.people.models import Person
+
 
 class Issue24Model(models.Model):
     one = models.PositiveIntegerField()
     two = models.PositiveIntegerField()
+
 
 class User(models.Model):
     """User model."""
@@ -45,12 +48,12 @@ class PersonType(models.Model):
     def __unicode__(self):
         return '%s' % self.title
 
-    @permalink
     def get_absolute_url(self):
         return ('person_type_detail', None, {'slug': self.slug})
 
 # some details left out of the Person model, in order to avoid a requirement
 # on python-dateutil
+
 
 class Person(models.Model):
     """Person model."""
@@ -58,7 +61,7 @@ class Person(models.Model):
         (1, 'Male'),
         (2, 'Female'),
     )
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     first_name = models.CharField(_('first name'), blank=True, max_length=100)
     middle_name = models.CharField(_('middle name'), blank=True, max_length=100)
     last_name = models.CharField(_('last name'), blank=True, max_length=100)
@@ -82,9 +85,8 @@ class Person(models.Model):
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
-    @permalink
     def get_absolute_url(self):
-        return ('person_detail', None, {'slug': self.slug})
+        return reverse('person_detail', args={'slug': self.slug, })
 
 
 class Genre(models.Model):
@@ -98,9 +100,8 @@ class Genre(models.Model):
     def __unicode__(self):
         return '%s' % self.title
 
-    @permalink
     def get_absolute_url(self):
-        return ('book_genre_detail', None, { 'slug': self.slug })
+        return reverse('book_genre_detail', args={'slug': self.slug, })
 
 
 class Publisher(models.Model):
@@ -120,9 +121,8 @@ class Publisher(models.Model):
     def full_title(self):
         return '%s %s' % (self.prefix, self.title)
 
-    @permalink
     def get_absolute_url(self):
-        return ('book_publisher_detail', None, { 'slug':self.slug })
+        return reverse('book_publisher_detail', args={'slug': self.slug, })
 
 
 class Book(models.Model):
@@ -134,7 +134,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Person, limit_choices_to={'person_types__slug__exact': 'author'}, related_name='books')
     isbn = models.CharField(max_length=14, blank=True)
     pages = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
-    publisher = models.ForeignKey(Publisher, blank=True, null=True)
+    publisher = models.ForeignKey(Publisher, blank=True, null=True, on_delete=models.CASCADE)
     published = models.DateField(blank=True, null=True)
     cover = models.FileField(upload_to='books', blank=True)
     description = models.TextField(blank=True)
@@ -155,9 +155,8 @@ class Book(models.Model):
         else:
             return '%s' % self.title
 
-    @permalink
     def get_absolute_url(self):
-        return ('book_detail', None, { 'slug': self.slug })
+        return reverse('book_detail', args={'slug': self.slug, })
 
     @property
     def amazon_url(self):
@@ -171,8 +170,8 @@ class Book(models.Model):
 
 class Highlight(models.Model):
     """Highlights from books"""
-    user = models.ForeignKey(User)
-    book = models.ForeignKey(Book)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     highlight = models.TextField()
     page = models.CharField(blank=True, max_length=20)
     created = models.DateTimeField(auto_now_add=True)
@@ -181,14 +180,14 @@ class Highlight(models.Model):
     def __unicode__(self):
         return '%s' % self.highlight
 
-    @permalink
     def get_absolute_url(self):
-        return ('book_detail', None, { 'slug': self.book.slug })
+        return reverse('book_detail', args={'slug': self.book.slug, })
+
 
 class Page(models.Model):
     """Page model"""
-    user = models.ForeignKey(User)
-    book = models.ForeignKey(Book)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     current_page = models.PositiveSmallIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -197,6 +196,7 @@ class Page(models.Model):
 
     def __unicode__(self):
         return '%s' % self.current_page
+
 
 class Milk(models.Model):
     """A meaningless model designed to test unicode ability.  This might screw

@@ -9,7 +9,7 @@ from pprint import pformat
 from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from django.core.management import call_command
-from django.db.models.loading import load_app
+from django.apps import apps
 
 from johnny import settings as johnny_settings
 from johnny.compat import Queue
@@ -18,6 +18,7 @@ from johnny.signals import qc_hit, qc_miss, qc_skip
 
 # order matters here;  I guess we aren't deferring foreign key checking :\
 johnny_fixtures = ['authors.json', 'genres.json', 'publishers.json', 'books.json']
+
 
 def show_johnny_signals(hit=None, miss=None):
     """A decorator that can be put on a test function that will show the
@@ -29,6 +30,7 @@ def show_johnny_signals(hit=None, miss=None):
         print("miss:\n\t%s\n\t%s\n" % (pformat(args), pformat(kwargs)))
     hit = hit or _hit
     miss = miss or _miss
+
     def deco(func):
         @wraps(func, assigned=available_attrs(func))
         def wrapped(*args, **kwargs):
@@ -43,6 +45,7 @@ def show_johnny_signals(hit=None, miss=None):
         return wrapped
     return deco
 
+
 def _pre_setup(self):
     self.saved_INSTALLED_APPS = settings.INSTALLED_APPS
     self.saved_DEBUG = settings.DEBUG
@@ -52,16 +55,18 @@ def _pre_setup(self):
     )
     settings.DEBUG = True
     # load our fake application and syncdb
-    load_app(test_app)
+    apps.get_app_config(test_app)
     call_command('syncdb', verbosity=0, interactive=False)
     if hasattr(settings, 'DATABASES'):
         for dbname in settings.DATABASES:
             if dbname != 'default':
                 call_command('syncdb', verbosity=0, interactive=False, database=dbname)
 
+
 def _post_teardown(self):
     settings.INSTALLED_APPS = self.saved_INSTALLED_APPS
     settings.DEBUG = self.saved_DEBUG
+
 
 class JohnnyTestCase(TestCase):
     def _pre_setup(self):
@@ -72,6 +77,7 @@ class JohnnyTestCase(TestCase):
         _post_teardown(self)
         super(JohnnyTestCase, self)._post_teardown()
 
+
 class TransactionJohnnyTestCase(TransactionTestCase):
     def _pre_setup(self):
         _pre_setup(self)
@@ -80,6 +86,7 @@ class TransactionJohnnyTestCase(TransactionTestCase):
     def _post_teardown(self):
         _post_teardown(self)
         super(TransactionJohnnyTestCase, self)._post_teardown()
+
 
 class TransactionJohnnyWebTestCase(TransactionJohnnyTestCase):
     def _pre_setup(self):
@@ -102,6 +109,7 @@ class TransactionJohnnyWebTestCase(TransactionJohnnyTestCase):
         settings.TEMPLATE_LOADERS = self.saved_TEMPLATE_LOADERS
         super(TransactionJohnnyWebTestCase, self)._post_teardown()
 
+
 class message_queue(object):
     """Return a message queue that gets 'hit' or 'miss' messages.  The signal
     handlers use weakrefs, so if we don't save references to this object they
@@ -113,16 +121,23 @@ class message_queue(object):
         qc_skip.connect(self._skip)
 
     def _hit(self, *a, **k): self.q.put(True)
+
     def _miss(self, *a, **k): self.q.put(False)
+
     def _skip(self, *a, **k): self.q.put(False)
 
     def clear(self):
         while not self.q.empty():
             self.q.get_nowait()
+
     def get(self): return self.q.get()
+
     def get_nowait(self): return self.q.get_nowait()
+
     def qsize(self): return self.q.qsize()
+
     def empty(self): return self.q.empty()
+
 
 def supports_transactions(con):
     """A convenience function which will work across multiple django versions
