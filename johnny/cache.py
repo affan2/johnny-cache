@@ -1,5 +1,4 @@
 """Johnny's main caching functionality."""
-
 from hashlib import md5
 from uuid import uuid4
 from types import MethodType
@@ -13,12 +12,13 @@ from . import settings
 from .compat import (
     force_bytes, force_text, string_types, text_type, empty_iter)
 from .decorators import wraps, available_attrs
-from .transaction import TransactionManager
+# from .transaction import TransactionManager
 
 
 class NotInCache(object):
-    #This is used rather than None to properly cache empty querysets
+    # This is used rather than None to properly cache empty querysets
     pass
+
 
 no_result_sentinel = "22c52d96-156a-4638-a38d-aae0051ee9df"
 local = localstore.LocalStore()
@@ -46,10 +46,12 @@ def get_backend(**kwargs):
     cls = QueryCacheBackend
     return cls(**kwargs)
 
+
 def enable():
     """Enable johnny-cache, for use in scripts, management commands, async
     workers, or other code outside the django request flow."""
     get_backend().patch()
+
 
 def disable():
     """Disable johnny-cache.  This will disable johnny-cache for the whole
@@ -57,7 +59,9 @@ def disable():
     tables will not be invalidated properly.  Use Carefully."""
     get_backend().unpatch()
 
+
 patch,unpatch = enable,disable
+
 
 def resolve_table(x):
     """Return a table name for x, where x is either a model instance or a string."""
@@ -116,6 +120,7 @@ def get_tables_for_query(query):
             tables |= get_tables(node, tables)
 
     return list(tables)
+
 
 def get_tables_for_query_pre_16(query):
     """
@@ -239,7 +244,7 @@ class KeyHandler(object):
             generations.append(self.get_single_generation(table, db))
         key = self.keygen.gen_multi_key(generations, db)
         val = self.cache_backend.get(key, None, db)
-        #if local.get('in_test', None): print force_bytes(val).ljust(32), key
+        # if local.get('in_test', None): print force_bytes(val).ljust(32), key
         if val is None:
             val = self.keygen.random_generator()
             self.cache_backend.set(key, val, settings.MIDDLEWARE_SECONDS, db)
@@ -378,10 +383,10 @@ class QueryCacheBackend(object):
             val = _get_original(original, cls, *args, **kwargs)
 
             if hasattr(val, '__iter__'):
-                #Can't permanently cache lazy iterables without creating
-                #a cacheable data structure. Note that this makes them
-                #no longer lazy...
-                #todo - create a smart iterable wrapper
+                # Can't permanently cache lazy iterables without creating
+                # a cacheable data structure. Note that this makes them
+                # no longer lazy...
+                # todo - create a smart iterable wrapper
                 val = list(val)
             if key is not None:
                 if not val:
@@ -401,13 +406,13 @@ class QueryCacheBackend(object):
             ret = _get_original(original, cls, *args, **kwargs)
 
             if isinstance(cls, compiler.SQLInsertCompiler):
-                #Inserts are a special case where cls.tables
-                #are not populated.
+                # Inserts are a special case where cls.tables
+                # are not populated.
                 tables = [cls.query.model._meta.db_table]
             else:
-                #if cls.query.tables != list(cls.query.table_map):
+                # if cls.query.tables != list(cls.query.table_map):
                 #    pass
-                #tables = list(cls.query.table_map)
+                # tables = list(cls.query.table_map)
                 tables = cls.query.tables
             for table in tables:
                 if not disallowed_table(table):

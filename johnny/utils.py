@@ -11,7 +11,22 @@ from .cache import get_backend, local, patch, unpatch
 from .decorators import wraps, available_attrs
 
 
-__all__ = ["celery_enable_all", "celery_task_wrapper", "johnny_task_wrapper"]
+# Based on a solution provided by vstoykov in django-imagekit.
+# https://github.com/vstoykov/django-imagekit/commit/c26f8a0
+def get_cache(backend, **kwargs):
+    """
+    Compatibilty wrapper for getting Django's cache backend instance
+    """
+
+    cache = _create_cache(backend, **kwargs)
+    # Some caches -- python-memcached in particular -- need to do a cleanup at the
+    # end of a request cycle. If not implemented in a particular backend
+    # cache.close is a no-op
+    signals.request_finished.connect(cache.close)
+    return cache
+
+
+__all__ = ["celery_enable_all", "celery_task_wrapper", "johnny_task_wrapper", "get_cache", ]
 
 
 def prerun_handler(*args, **kwargs):
@@ -61,21 +76,6 @@ def celery_task_wrapper(f):
             get_backend().unpatch()
         return ret
     return newf
-
-
-# Based on a solution provided by vstoykov in django-imagekit.
-# https://github.com/vstoykov/django-imagekit/commit/c26f8a0
-def get_cache(backend, **kwargs):
-    """
-    Compatibilty wrapper for getting Django's cache backend instance
-    """
-
-    cache = _create_cache(backend, **kwargs)
-    # Some caches -- python-memcached in particular -- need to do a cleanup at the
-    # end of a request cycle. If not implemented in a particular backend
-    # cache.close is a no-op
-    signals.request_finished.connect(cache.close)
-    return cache
 
 
 # Added by Mohammad Abouchama to replace functionality provided by celery.utils.fun_takes_kwargs.

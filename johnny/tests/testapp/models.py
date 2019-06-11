@@ -35,6 +35,7 @@ class User(models.Model):
     def __repr__(self):
         return '<User: %s %s>' % (self.first_name, self.last_name)
 
+
 class PersonType(models.Model):
     """Person type model."""
     title = models.CharField(_('title'), max_length=100)
@@ -49,7 +50,7 @@ class PersonType(models.Model):
         return '%s' % self.title
 
     def get_absolute_url(self):
-        return ('person_type_detail', None, {'slug': self.slug})
+        return reverse('person_type_detail', args={'slug': self.slug})
 
 # some details left out of the Person model, in order to avoid a requirement
 # on python-dateutil

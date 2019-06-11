@@ -30,7 +30,6 @@ def show_johnny_signals(hit=None, miss=None):
         print("miss:\n\t%s\n\t%s\n" % (pformat(args), pformat(kwargs)))
     hit = hit or _hit
     miss = miss or _miss
-
     def deco(func):
         @wraps(func, assigned=available_attrs(func))
         def wrapped(*args, **kwargs):
@@ -44,7 +43,6 @@ def show_johnny_signals(hit=None, miss=None):
             return ret
         return wrapped
     return deco
-
 
 def _pre_setup(self):
     self.saved_INSTALLED_APPS = settings.INSTALLED_APPS
@@ -62,11 +60,9 @@ def _pre_setup(self):
             if dbname != 'default':
                 call_command('syncdb', verbosity=0, interactive=False, database=dbname)
 
-
 def _post_teardown(self):
     settings.INSTALLED_APPS = self.saved_INSTALLED_APPS
     settings.DEBUG = self.saved_DEBUG
-
 
 class JohnnyTestCase(TestCase):
     def _pre_setup(self):
@@ -76,7 +72,6 @@ class JohnnyTestCase(TestCase):
     def _post_teardown(self):
         _post_teardown(self)
         super(JohnnyTestCase, self)._post_teardown()
-
 
 class TransactionJohnnyTestCase(TransactionTestCase):
     def _pre_setup(self):
@@ -121,23 +116,16 @@ class message_queue(object):
         qc_skip.connect(self._skip)
 
     def _hit(self, *a, **k): self.q.put(True)
-
     def _miss(self, *a, **k): self.q.put(False)
-
     def _skip(self, *a, **k): self.q.put(False)
 
     def clear(self):
         while not self.q.empty():
             self.q.get_nowait()
-
     def get(self): return self.q.get()
-
     def get_nowait(self): return self.q.get_nowait()
-
     def qsize(self): return self.q.qsize()
-
     def empty(self): return self.q.empty()
-
 
 def supports_transactions(con):
     """A convenience function which will work across multiple django versions

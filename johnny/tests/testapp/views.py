@@ -6,6 +6,7 @@
 from django.shortcuts import render_to_response
 from .models import *
 
+
 def template_queries(request):
     """Render a simple template that will perform a query."""
     books = Book.objects.all()
