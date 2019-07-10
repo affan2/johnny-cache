@@ -2,7 +2,7 @@ from warnings import warn
 
 from django.conf import settings
 from django.core.cache import cache
-from .utils import get_cache
+from .utils_cache import get_cache
 
 DISABLE_QUERYSET_CACHE = getattr(settings, 'DISABLE_QUERYSET_CACHE', False)
 

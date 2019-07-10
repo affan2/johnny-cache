@@ -125,14 +125,14 @@ class MultiDbTest(TransactionQueryCacheBase):
         g2 = Genre.objects.using("second").get(pk=1)
         g2.title = "A second database"
         g2.save(using='second')
-        #fresh from cache since we saved each
+        # fresh from cache since we saved each
         with self.assertNumQueries(1, using='default'):
             g1 = Genre.objects.using('default').get(pk=1)
         with self.assertNumQueries(1, using='second'):
             g2 = Genre.objects.using('second').get(pk=1)
         self.assertEqual(g1.title, "A default database")
         self.assertEqual(g2.title, "A second database")
-        #should be a cache hit
+        # should be a cache hit
         with self.assertNumQueries(0, using='default'):
             g1 = Genre.objects.using('default').get(pk=1)
         with self.assertNumQueries(0, using='second'):

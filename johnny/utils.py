@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.core.cache import _create_cache
-from django.core import signals
 import inspect
 
 """Extra johnny utilities."""
@@ -11,22 +9,7 @@ from .cache import get_backend, local, patch, unpatch
 from .decorators import wraps, available_attrs
 
 
-# Based on a solution provided by vstoykov in django-imagekit.
-# https://github.com/vstoykov/django-imagekit/commit/c26f8a0
-def get_cache(backend, **kwargs):
-    """
-    Compatibilty wrapper for getting Django's cache backend instance
-    """
-
-    cache = _create_cache(backend, **kwargs)
-    # Some caches -- python-memcached in particular -- need to do a cleanup at the
-    # end of a request cycle. If not implemented in a particular backend
-    # cache.close is a no-op
-    signals.request_finished.connect(cache.close)
-    return cache
-
-
-__all__ = ["celery_enable_all", "celery_task_wrapper", "johnny_task_wrapper", "get_cache", ]
+__all__ = ["celery_enable_all", "celery_task_wrapper", "johnny_task_wrapper", "utils_cache.py", ]
 
 
 def prerun_handler(*args, **kwargs):
