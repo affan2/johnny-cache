@@ -12,7 +12,7 @@ from . import settings
 from .compat import (
     force_bytes, force_text, string_types, text_type, empty_iter)
 from .decorators import wraps, available_attrs
-# from .transaction import TransactionManager
+from .transaction import TransactionManager
 
 
 class NotInCache(object):
