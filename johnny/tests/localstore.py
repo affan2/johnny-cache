@@ -55,7 +55,7 @@ class LocalStoreTest(TestCase):
             store['name'] = name
             q.put(dict(store))
         threads = []
-        for x in range(5):
+        for x in list(range(5)):
             t = Thread(target=do_test, name='thread%x' % x)
             t.start()
             threads.append(t)

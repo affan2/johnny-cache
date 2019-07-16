@@ -524,7 +524,7 @@ class MultiModelTest(QueryCacheBase):
         invalidate('testapp_genre', Publisher)
         g = Genre.objects.get(id=1)
         p = Publisher.objects.get(id=1)
-        fg,fp,sg,sp = [q.get() for i in range(4)]
+        fg,fp,sg,sp = [q.get() for i in list(range(4))]
         self.assertFalse(fg)
         self.assertFalse(fp)
         self.assertFalse(sg)
