@@ -17,7 +17,7 @@ class LocalStore(threading.local):
     """
     def __init__(self, **d):
         threading.local.__init__(self)
-        for k, v in d.items():
+        for k, v in list(d.items()):
             threading.local.__setattr__(self, k, v)
 
     # dictionary API
@@ -38,31 +38,31 @@ class LocalStore(threading.local):
         return len(self.__dict__)
 
     def keys(self):
-        return self.__dict__.keys()
+        return list(self.__dict__.keys())
 
     def values(self):
-        return self.__dict__.values()
+        return list(self.__dict__.values())
 
     def items(self):
-        return self.__dict__.items()
+        return list(self.__dict__.items())
 
     def iterkeys(self):
         warnings.warn(
             'LocalStore.iterkeys() is deprecated, use .keys() instead',
             DeprecationWarning)
-        return self.__dict__.keys()
+        return list(self.__dict__.keys())
 
     def itervalues(self):
         warnings.warn(
             'LocalStore.itervalues() is deprecated, use .values() instead',
             DeprecationWarning)
-        return self.__dict__.values()
+        return list(self.__dict__.values())
 
     def iteritems(self):
         warnings.warn(
             'LocalStore.iteritems() is deprecated, use .items() instead',
             DeprecationWarning)
-        return self.__dict__.items()
+        return list(self.__dict__.items())
 
     def get(self, *args):
         return self.__dict__.get(*args)

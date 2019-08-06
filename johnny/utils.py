@@ -48,7 +48,7 @@ def celery_task_wrapper(f):
         # we will pass only the ones the function below accepts,
         # just as celery does
         supported_keys = fun_takes_kwargs(f, kwargs)
-        new_kwargs = dict((key, val) for key, val in kwargs.items()
+        new_kwargs = dict((key, val) for key, val in list(kwargs.items())
                                 if key in supported_keys)
 
         try:

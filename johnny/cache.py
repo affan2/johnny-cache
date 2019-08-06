@@ -90,7 +90,7 @@ def get_tables_for_query(query):
     """
     from django.db.models.sql.where import WhereNode, SubqueryConstraint
     from django.db.models.query import QuerySet
-    tables = set([v[0] for v in getattr(query,'alias_map',{}).values()])
+    tables = set([v[0] for v in list(getattr(query,'alias_map',{}).values())])
 
     def get_sub_query_tables(node):
         query = node.query_object
@@ -99,7 +99,7 @@ def get_tables_for_query(query):
         else:
             query = query._clone()
         query = query.query
-        return set(v[0] for v in getattr(query, 'alias_map',{}).values())
+        return set(v[0] for v in list(getattr(query, 'alias_map',{}).values()))
 
     def get_tables(node, tables):
         if isinstance(node, SubqueryConstraint):
@@ -130,7 +130,7 @@ def get_tables_for_query_pre_16(query):
     """
     from django.db.models.sql.where import WhereNode
     from django.db.models.query import QuerySet
-    tables = set([v[0] for v in getattr(query,'alias_map',{}).values()])
+    tables = set([v[0] for v in list(getattr(query,'alias_map',{}).values())])
 
     def get_tables(node, tables):
         for child in node.children:
@@ -275,7 +275,7 @@ def _get_original(original, instance, *args, **kwargs):
     """
     Return the value from the call to the original method.
     """
-    if original.im_class == instance.__class__:
+    if original.__self__.__class__ == instance.__class__:
         return original(instance, *args, **kwargs)
     else:  # allow compiler proxies as well
         if six.PY3:
@@ -472,7 +472,7 @@ class QueryCacheBackend(object):
             except AttributeError:
                  instance._meta._fill_related_objects_cache()
 
-            for obj in instance._meta._related_objects_cache.keys():
+            for obj in list(instance._meta._related_objects_cache.keys()):
                 obj_table = obj.model._meta.db_table
                 if obj_table not in tables:
                     tables.add(obj_table)
