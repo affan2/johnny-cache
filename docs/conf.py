@@ -45,8 +45,8 @@ source_encoding = 'utf-8'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Johnny Cache'
-copyright = u'2010, Jason Moiron, Jeremy Self'
+project = 'Johnny Cache'
+copyright = '2010, Jason Moiron, Jeremy Self'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -187,8 +187,8 @@ htmlhelp_basename = 'JohnnyCachedoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'JohnnyCache.tex', u'Johnny Cache Documentation',
-   u'Jason Moiron, Jeremy Self', 'manual'),
+  ('index', 'JohnnyCache.tex', 'Johnny Cache Documentation',
+   'Jason Moiron, Jeremy Self', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

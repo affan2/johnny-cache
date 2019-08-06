@@ -4,7 +4,7 @@
 Tools to ease compatibility across supported versions of Django & Python.
 """
 
-from __future__ import unicode_literals
+
 from django.db.models.sql import compiler
 
 from queue import Queue
