@@ -230,7 +230,7 @@ class KeyHandler(object):
         """Creates a random generation value for a single table name"""
         key = self.keygen.gen_table_key(table, db)
         val = self.cache_backend.get(key, None, db)
-        #if local.get('in_test', None): print force_bytes(val).ljust(32), key
+        #if local.get('in_test', None): print(force_bytes(val).ljust(32), key)
         if val is None:
             val = self.keygen.random_generator()
             self.cache_backend.set(key, val, settings.MIDDLEWARE_SECONDS, db)
@@ -244,7 +244,7 @@ class KeyHandler(object):
             generations.append(self.get_single_generation(table, db))
         key = self.keygen.gen_multi_key(generations, db)
         val = self.cache_backend.get(key, None, db)
-        # if local.get('in_test', None): print force_bytes(val).ljust(32), key
+        # if local.get('in_test', None): print(force_bytes(val).ljust(32), key)
         if val is None:
             val = self.keygen.random_generator()
             self.cache_backend.set(key, val, settings.MIDDLEWARE_SECONDS, db)
