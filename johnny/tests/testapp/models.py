@@ -46,7 +46,7 @@ class PersonType(models.Model):
         verbose_name_plural = _('person types')
         ordering = ('title',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.title
 
     def get_absolute_url(self):
@@ -79,7 +79,7 @@ class Person(models.Model):
         verbose_name_plural = _('people')
         ordering = ('last_name', 'first_name',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.full_name
 
     @property
@@ -98,7 +98,7 @@ class Genre(models.Model):
     class Meta:
         ordering = ('title',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.title
 
     def get_absolute_url(self):
@@ -115,7 +115,7 @@ class Publisher(models.Model):
     class Meta:
         ordering = ('title',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.full_title
 
     @property
@@ -146,7 +146,7 @@ class Book(models.Model):
     class Meta:
         ordering = ('title',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.full_title
 
     @property
@@ -178,7 +178,7 @@ class Highlight(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.highlight
 
     def get_absolute_url(self):
@@ -195,7 +195,7 @@ class Page(models.Model):
     class Meta:
         ordering = ('-created',)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.current_page
 
 
