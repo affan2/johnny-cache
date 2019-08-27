@@ -3,7 +3,7 @@
 
 """Tests for the QueryCache functionality of johnny."""
 
-from __future__ import print_function
+
 from threading import Thread
 
 from django.conf import settings

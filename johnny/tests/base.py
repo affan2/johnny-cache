@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """Base test class for Johnny Cache Tests."""
-
-from __future__ import print_function
 from pprint import pformat
 
 from django.test import TestCase, TransactionTestCase

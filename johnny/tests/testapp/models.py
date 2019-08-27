@@ -8,6 +8,7 @@ import django
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -62,7 +63,7 @@ class Person(models.Model):
         (1, 'Male'),
         (2, 'Female'),
     )
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), blank=True, null=True, on_delete=models.CASCADE)
     first_name = models.CharField(_('first name'), blank=True, max_length=100)
     middle_name = models.CharField(_('middle name'), blank=True, max_length=100)
     last_name = models.CharField(_('last name'), blank=True, max_length=100)
@@ -171,7 +172,7 @@ class Book(models.Model):
 
 class Highlight(models.Model):
     """Highlights from books"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     highlight = models.TextField()
     page = models.CharField(blank=True, max_length=20)
@@ -187,7 +188,7 @@ class Highlight(models.Model):
 
 class Page(models.Model):
     """Page model"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     current_page = models.PositiveSmallIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
