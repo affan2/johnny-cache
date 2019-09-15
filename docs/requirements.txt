@@ -1,3 +1,0 @@
-Django==1.4
-django-redis-cache==0.9.5
-python-memcached==1.48
